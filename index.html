@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Document</title>
+<style>
+ul {margin: 0;padding: 0;list-style: none;} 
+img {vertical-align: top;}
+#wrap {margin: 40px auto;position: relative;width: 600px;height: 400px;border: 2px solid #000;overflow: hidden;}    
+#pics {position: absolute;left: 0;top: 0;display: flex;height: 400px;z-index: 1;}
+#pics li{width: 600px;height: 400px;overflow: hidden;}
+#pics img {width: 600px;height: 400px;}
+.btn {position: absolute;top: 170px;z-index: 2;width: 60px;font: 40px/60px "宋体";text-align: center;background: rgba(255, 255, 255, .6);text-decoration: none;color: #000;}
+.btn:hover {background: #fff;}
+.prev {left: 0;}
+.next {right: 0;}
+#navs {position: absolute;left: 0;bottom: 10px;z-index: 3;width: 100%;text-align: center;}
+#navs a {display: inline-block;width: 12px;height: 12px;background: #fff;}
+#navs .active {background: #f60;}
+</style>
+</head>
+<body>
+<div id="wrap">
+    <ul id="pics">
+        <li>
+            <img src="img2/img (1).jpg" />
+        </li>
+        <li>
+            <img src="img2/img (2).jpg" />
+        </li>
+        <li>
+            <img src="img2/img (3).jpg" />
+        </li>
+        <li>
+            <img src="img2/img (4).jpg" />
+        </li>
+        <li>
+            <img src="img2/img (5).jpg" />
+        </li>
+        <li>
+            <img src="img2/img (1).jpg" />
+        </li>
+    </ul>
+    <a href="javascript:;" class="btn prev">&lt</a>
+    <a href="javascript:;" class="btn next">&gt</a>
+    <nav id="navs">
+        <a class="active"></a>
+        <a></a>
+        <a></a>
+        <a></a>
+        <a></a>
+    </nav>
+</div>
+<script src="./mTween.js"></script>
+<script>
+!function(){
+    var navs = document.querySelectorAll("#navs a")
+    var pictures = document.querySelector("#pics")
+    var picture = pictures.querySelector("li")
+    var pictureWidth = css(picture,"width")
+    var prev = document.querySelector(".prev")
+    var next = document.querySelector(".next")
+    var wrap = document.querySelector("#wrap")
+    var now = 0
+    var timer = 0
+    var move = false
+    css(pictures,"translateX",0)
+    navs.forEach(function(item,index){
+        item.onclick = function(){
+            if(move){
+                return
+            }
+            move = true
+            now = index
+            tab()
+        }
+    })
+    prev.onclick = function(){
+        if(move){
+            return
+        }
+        move = true
+        if(now == 0){
+            now = navs.length
+            css(pictures,"translateX",-now * pictureWidth)
+        }
+        now--
+        tab()
+    }
+    next.onclick = function(){
+        nextPicture()
+    }
+    function nextPicture(){
+        if(move){
+            return
+        }
+        move = true
+        if(now >= navs.length){
+            now = 0
+            css(pictures,"translateX",0)
+        }
+        now++
+        tab()
+    }
+    function tab(){
+        navs.forEach(function(item,index){
+            item.classList.remove("active")
+        })
+        navs[now%navs.length].classList.add("active")
+        mTween({
+            el: pictures,
+            attr: {
+                translateX: -now * pictureWidth
+            },
+            duration: 2000,
+            cb: function(){
+                if(now >= navs.length){
+                    now = 0
+                    css(pictures,"translateX",0)
+                }
+                move = false
+            }
+        })
+    }
+    timer = setInterval(function(){
+        nextPicture()
+    },2000)
+    wrap.onmouseover = function(){
+        clearInterval(timer)
+    }
+    wrap.onmouseout = function(){
+        setInterval(function(){nextPicture()},2000)
+    }
+}.call()
+</script>
+</body>
+</html>
