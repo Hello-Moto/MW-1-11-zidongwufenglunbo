@@ -126,12 +126,14 @@ img {vertical-align: top;}
     }
     timer = setInterval(function(){
         nextPicture()
-    },2000)
+    },4000)
     wrap.onmouseover = function(){
         clearInterval(timer)
     }
     wrap.onmouseout = function(){
-        setInterval(function(){nextPicture()},2000)
+        timer = setInterval(function(){
+            nextPicture()
+        },4000)
     }
 }.call()
 </script>
